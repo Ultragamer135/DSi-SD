@@ -1,0 +1,70 @@
+#!/bin/bash
+#DSi-SD
+#BY usernamenotavalible / Eli Nero
+#A simple shell script for setting up an SD card for modding a DSi.
+#Dependencies: dialog, git
+
+
+#Welcome sequence
+echo "Welcome to DSI-SD ! DSi-SD is a script for setting up an SD card for modding a Nintendo DSi."
+#Wait for a keypress
+echo "Press any key to continue, or use Ctrl+C to exit."
+while [ true ] ; do #forever loop
+read -t 3 -n 1 #Returns 0 if a key is pressed
+if [ $? = 0 ] ; then #if previous command returns 0, run next command
+echo "" ; #escapes from loop
+fi
+#Make directories and vars
+mkdir "logs" #make log directory
+mkdir "DSi-SD-out" #Makes the directory used for output
+cd DSi-SD-out #Change working directory to the output folder
+input=" " #Prepares "INPUT" variable, used by dialog and case command to figure out what to do.
+#Set vars
+date=$(date +%H%M) #Set a var to the current hour+minute. used for naming log files.
+DSiSD=$(pwd) #used to remember the path to DSi-SD
+
+#Show Main Menu
+TITLE="Main Menu" #set title
+
+OPTIONS=(Setup "Set up your SD card for usage with a nintendo DSi." #used to insert options for menu
+         Install "Install software"
+         Uninstall/Delete "Uninstall software"
+         Extras "Extra utilities and tools"
+         Info "Info and guides for both DSi-SD and some other software.."
+         Options "Change options for DSi-SD. Also used for updating."
+         Exit "Exit DSi-SD")
+
+dialog --clear --backtitle "DSi-SD" --title "$TITLE" --menu "Choose an option to continue." 15 40 4 "${OPTIONS[@]}" 2>"${input}"
+menuitem=$(<"${input}") #Sets variable "menuitem" to the name of the menu item picked by the user
+case $menuitem in #used for preforming actions
+        Setup)
+            echo "Starting..."
+            wget https://github.com/DS-Homebrew/TWiLightMenu/releases/latest/download/TWiLightMenu-DSi.7z > ../logs/setup-$date.log
+            7z e TWiLightMenu-DSi.7z BOOT.NDS -r -aoa > $DSiSD/logs/setup-$date.log
+            7z e TWiLightMenu-DSi.7z -o_nds _nds -r -aoa > $DSiSD/logs/setup-$date.log
+            rm "TWiLightMenu-DSi.7z"
+            ;;
+        Install)
+            echo "W.I.P."
+            ;;
+        Uninstall/Delete)
+            echo "W.I.P."
+            ;;
+        Extras)
+            echo "W.I.P."
+            ;;
+        Info)
+            echo "W.I.P."
+            ;;
+        Options)
+            echo "W.I.P."
+            ;;
+        Exit)
+            clear
+            echo "Exiting DSi-SD. Goodbye!"
+            cd $DSiSD
+            exit
+            ;;
+esac
+
+done #end of file
